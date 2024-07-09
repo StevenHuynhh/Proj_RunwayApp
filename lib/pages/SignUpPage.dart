@@ -1,14 +1,51 @@
 import 'package:flutter/material.dart';
-import 'Login_page.dart'; // Import the LoginPage
+import 'package:get/get.dart';
+import 'package:hello_world/controllers/registration_controller.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final RegistrationController _registrationController =
+      Get.put(RegistrationController());
+
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up controllers
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void registerUser() {
+    String username = usernameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+      // Handle empty fields (show message, disable button, etc.)
+      return;
+    }
+
+    _registrationController.registerWithEmail(
+      usernameController.text,
+      emailController.text,
+      passwordController.text,
+      usernameController,
+      emailController,
+      passwordController,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,59 +113,59 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const TextField(
+                  TextField(
+                    controller: usernameController,
                     decoration: InputDecoration(
                       labelText: 'Username *',
-                      labelStyle:
-                          TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                      labelStyle: TextStyle(color: Colors.white),
                       enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Color.fromARGB(255, 85, 83, 83)),
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 255, 255, 255)),
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                       contentPadding: EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 16.0),
+                        vertical: 12.0,
+                        horizontal: 16.0,
+                      ),
                     ),
-                    style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    style: TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 20),
-                  const TextField(
+                  TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       labelText: 'Email Address *',
-                      labelStyle:
-                          TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                      labelStyle: TextStyle(color: Colors.white),
                       enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Color.fromARGB(255, 85, 83, 83)),
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 255, 255, 255)),
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                       contentPadding: EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 16.0),
+                        vertical: 12.0,
+                        horizontal: 16.0,
+                      ),
                     ),
-                    style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    style: TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 20),
-                  const TextField(
+                  TextField(
+                    controller: passwordController,
                     decoration: InputDecoration(
                       labelText: 'Password *',
-                      labelStyle:
-                          TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                      labelStyle: TextStyle(color: Colors.white),
                       enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Color.fromARGB(255, 85, 83, 83)),
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 255, 255, 255)),
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                       contentPadding: EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 16.0),
+                        vertical: 12.0,
+                        horizontal: 16.0,
+                      ),
                     ),
                     obscureText: true,
                     style: TextStyle(color: Colors.white),
@@ -137,13 +174,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
-                        );
-                      },
+                      onPressed: registerUser,
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
@@ -155,14 +186,12 @@ class _SignUpPageState extends State<SignUpPage> {
                   const SizedBox(height: 16),
                   GestureDetector(
                     onTap: () {
-                      // Navigate to login page
-                      Navigator.of(context)
-                          .pop(); // Assuming login page is previous route
+                      Navigator.of(context).pop(); // Navigate back
                     },
                     child: const Text(
                       'Already Have an Account? Log in',
                       style: TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255),
+                        color: Colors.white,
                         decoration: TextDecoration.underline,
                       ),
                     ),

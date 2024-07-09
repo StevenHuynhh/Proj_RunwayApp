@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world/pages/SignUpPage.dart';
-import 'MainPage.dart'; // Import the MainPage
-// Import your SignUpPage
+import 'package:get/get.dart';
+import 'package:hello_world/controllers/login_controller.dart'; // Import LoginController
+import 'signuppage.dart'; // Import the SignUpPage
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -11,6 +11,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final LoginController loginController = Get.put(LoginController());
   bool _rememberMe = false;
 
   @override
@@ -80,8 +81,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: loginController.emailController,
+                    decoration: const InputDecoration(
                       labelText: 'Email Address *',
                       labelStyle:
                           TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
@@ -94,14 +96,16 @@ class _LoginPageState extends State<LoginPage> {
                             color: Color.fromARGB(255, 255, 255, 255)),
                       ),
                       contentPadding: EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 16.0), // Adjust padding as needed
+                        vertical: 12.0,
+                        horizontal: 16.0,
+                      ),
                     ),
-                    style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 20),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: loginController.passwordController,
+                    decoration: const InputDecoration(
                       labelText: 'Password *',
                       labelStyle:
                           TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
@@ -114,11 +118,12 @@ class _LoginPageState extends State<LoginPage> {
                             color: Color.fromARGB(255, 255, 255, 255)),
                       ),
                       contentPadding: EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 16.0), // Adjust padding as needed
+                        vertical: 12.0,
+                        horizontal: 16.0,
+                      ),
                     ),
                     obscureText: true,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 20),
                   CheckboxListTile(
@@ -170,10 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MainPage()),
-                        );
+                        loginController.loginWithEmail();
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.black,

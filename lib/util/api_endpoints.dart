@@ -1,9 +1,11 @@
 class ApiEndpoints {
-  static final String baseUrl = 'http://restapi.adequateshop.com/api/';
-  static _AuthEndPoints authEndPoints = _AuthEndPoints();
+  static const baseUrl =
+      'https://cop4331-runway-0afcfa4da5a9.herokuapp.com/api';
+
+  static _AuthEndPoints authEndPoints = _AuthEndPoints(); // <- Change this line
 }
 
 class _AuthEndPoints {
-  final String registerEmail = 'authaccount/registration';
-  final String loginEmail = 'authaccount/login';
+  final String loginEmail = '/signin';
+  final String registerEmail = '/signup';
 }
