@@ -43,6 +43,7 @@ class RegistrationController extends GetxController {
           Get.snackbar(
             'Success',
             'Registration successful',
+            backgroundColor: Colors.white,
             snackPosition: SnackPosition.BOTTOM,
           );
 

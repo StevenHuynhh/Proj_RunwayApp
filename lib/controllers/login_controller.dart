@@ -43,6 +43,7 @@ class LoginController extends GetxController {
           Get.snackbar(
             'Success',
             'Login successful',
+            backgroundColor: Colors.white,
             snackPosition: SnackPosition.BOTTOM,
           );
 
@@ -50,7 +51,7 @@ class LoginController extends GetxController {
           Get.offAll(() =>
               MainPage()); // Replace MainPage() with your actual page constructor
         } else {
-          throw 'Access token format error: Invalid type or null or empty string';
+          throw 'Wrong username/password!';
         }
       } else {
         throw "Server returned an error: ${response.statusCode}";

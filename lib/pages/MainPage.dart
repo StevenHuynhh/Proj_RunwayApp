@@ -51,8 +51,8 @@ class _MainPageState extends State<MainPage> {
                   child: TabBarView(
                     children: [
                       ExploreTab(),
-                      ForYouTab(),
-                      WishlistTab(), // Add the Wishlist tab content
+                      WishlistTab(),
+                      SignOutTab(), // Add the Wishlist tab content
                     ],
                   ),
                 ),
@@ -71,10 +71,10 @@ class _MainPageState extends State<MainPage> {
                       text: 'Explore',
                     ),
                     Tab(
-                      text: 'For You',
+                      text: 'Wishlist',
                     ),
                     Tab(
-                      text: 'Wishlist',
+                      text: 'Sign Out',
                     ),
                   ],
                 ),
