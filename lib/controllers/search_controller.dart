@@ -1,76 +1,63 @@
-import 'package:http/http.dart' as http;
-import 'package:hello_world/util/api_endpoints.dart';
 import 'dart:convert';
-import 'package:hello_world/models/product.dart';
-
-
-
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class SearchController extends GetxController {
-  TextEditingController seachcontroller = TextEditingController();
-  String get searchTerm => seachcontroller.text.trim();
-  final maxResults = 10;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final String? accessToken = prefs.getString('token');
 
-  Future<Product> fetchSearchResults() async {
-  var bodyParameters = {
-    'search': searchTerm,
-    'max_results': maxResults.toString(),
-  };
-  final requestUrl = Uri.parse(ApiEndpoints.baseUrl + ApiEndpoints.authEndPoints.search));
-  try {
-    var response = await http.post(
-      requestUrl,
-      headers: {
+  Future<void> fetchSearchResults(String searchTerm,
+      {int maxResults = 10}) async {
+    try {
+      final SharedPreferences prefs = await _prefs;
+      String? accessToken = prefs.getString('token');
+
+      if (accessToken == null || accessToken.isEmpty) {
+        throw 'Access token is not available';
+      }
+
+      var headers = {
         'Content-Type': 'application/json',
-        'authorization': accessToken,
-      },
-      body: jsonEncode(bodyParameters),
-    );
+        'authorization': 'Bearer $accessToken',
+      };
+      var url = Uri.parse('https://projectrunway.tech/api/search');
 
-    if (response.statusCode == 200) {
-      var responseBody = json.decode(response.body);
+      Map<String, dynamic> bodyParameters = {
+        'search': searchTerm,
+        'max_results': maxResults.toString(),
+      };
 
-      if (responseBody.containsKey('error') && responseBody['error'] != "") {
-        var error = responseBody['error'];
-        print('Error received from server: $error');
-      } else {
-        var _results = responseBody.results.ret;
-        var List<Product> entries = [];
-        for (var i = 0; i < _results.length; i++) {
-            var product = _results[i];     
-            List<String> images = [];
+      http.Response response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(bodyParameters),
+      );
 
-          if (product.images[0] == '[') {
-              images = product.images.substring(1, product.images.length - 1).split(',').map((item) => item.substring(1, item.length - 1)).toList();
-              for (var j = 0; j < images.length; j++) {
-                var temp = images[j];
-                if (temp[0] == "'") {
-                  var h = temp.split("'");
-                  images[j] = h[1];
-                }
-              }
-          } else {
-            images = [product.images];
-          }
-          final image = images[0];
-          final entry = Product(
-            "name":product.name,
-            "imagePath":image,
-            "description":product.id,
-          )
-          entries.add(entry);
-          return entries;
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        var responseBody = json.decode(response.body);
+
+        if (responseBody.containsKey('error') && responseBody['error'] != "") {
+          var error = responseBody['error'];
+          print('Error received from server: $error');
+        } else {
+          print(responseBody); // Handle the response data as needed
         }
-      
-      }
       } else {
-          throw Exception('Failed to load data: ${response.statusCode}');
+        throw 'Failed to load data: ${response.statusCode}';
       }
-    } catch (error) {
-      print(error);
+    } catch (e) {
+      print('Error: $e');
+      Get.dialog(
+        SimpleDialog(
+          title: Text('Error'),
+          contentPadding: EdgeInsets.all(20),
+          children: [Text(e.toString())],
+        ),
+      );
     }
   }
-
 }

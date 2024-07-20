@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world/components/product_tile.dart';
-import 'package:hello_world/models/product.dart';
 import 'package:hello_world/models/shop.dart';
 import 'package:provider/provider.dart';
 
@@ -13,12 +12,10 @@ class ExploreTab extends StatefulWidget {
 
 class _ExploreTabState extends State<ExploreTab> {
   TextEditingController _searchController = TextEditingController();
-  List<Product> _filteredProducts = [];
 
   @override
   void initState() {
     super.initState();
-    _filteredProducts = context.read<Shop>().shop;
     _searchController.addListener(_filterProducts);
   }
 
@@ -28,15 +25,15 @@ class _ExploreTabState extends State<ExploreTab> {
     super.dispose();
   }
 
-  void _filterProducts() {
+  void _filterProducts() async {
     final query = _searchController.text.toLowerCase();
-    final allProducts = context.read<Shop>().shop;
-
-    setState(() {
-      _filteredProducts = allProducts
-          .where((product) => product.name.toLowerCase().contains(query))
-          .toList();
-    });
+    if (query.isEmpty) {
+      context
+          .read<Shop>()
+          .fetchSearchResults(''); // Fetch all products or handle accordingly
+    } else {
+      await context.read<Shop>().fetchSearchResults(query);
+    }
   }
 
   @override
@@ -70,12 +67,17 @@ class _ExploreTabState extends State<ExploreTab> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _filteredProducts.length,
-              padding: const EdgeInsets.all(5),
-              itemBuilder: (context, index) {
-                final product = _filteredProducts[index];
-                return ProductTile(product: product);
+            child: Consumer<Shop>(
+              builder: (context, shop, child) {
+                final products = shop.shop;
+                return ListView.builder(
+                  itemCount: products.length,
+                  padding: const EdgeInsets.all(5),
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    return ProductTile(product: product);
+                  },
+                );
               },
             ),
           ),

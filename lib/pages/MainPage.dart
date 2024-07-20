@@ -5,7 +5,7 @@ import 'package:hello_world/tabs/WishlistTab.dart';
 import 'package:hello_world/tabs/explore.dart';
 import 'package:hello_world/tabs/for_you.dart';
 import 'package:hello_world/tabs/WishlistTab.dart';
-import 'package:provider/provider.dart'; // Import the Wishlist tab
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

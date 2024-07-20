@@ -35,11 +35,18 @@ class RegistrationController extends GetxController {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
+        final jsonResponse = jsonDecode(response.body);
 
-        // Check if the response contains an error message
-        if (json['error'] == "") {
-          var accessToken = json['accessToken'] as String?;
+        // Print the full response to debug
+        print('Full response: $jsonResponse');
+
+        // Check for errors in the response
+        if (jsonResponse['error'] == null || jsonResponse['error'] == "") {
+          var accessToken = jsonResponse['accessToken'] as String?;
+
+          // Print the access token to debug
+          print('Access Token: $accessToken');
+
           Get.snackbar(
             'Success',
             'Registration successful',
@@ -58,16 +65,16 @@ class RegistrationController extends GetxController {
 
             // Navigate to login page
             Get.offAll(() => const LoginPage());
-          } /*else {
+          } else {
             throw 'Access token format error: accessToken is null or empty';
-          }*/
+          }
         } else {
-          throw 'Registration failed: ${json['error']}';
+          throw 'Registration failed: ${jsonResponse['error']}';
         }
       } else if (response.statusCode == 400) {
         // Handle specific error for duplicate email
-        final json = jsonDecode(response.body);
-        throw 'Registration failed: ${json['error']}';
+        final jsonResponse = jsonDecode(response.body);
+        throw 'Registration failed: ${jsonResponse['error']}';
       } else {
         throw "Server returned an error: ${response.statusCode}";
       }
