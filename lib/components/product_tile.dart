@@ -25,6 +25,17 @@ class ProductTile extends StatelessWidget {
       builder: (context, shop, child) {
         final isInCart = shop.cart.contains(product);
 
+        // Clean URL if needed
+        String cleanImageUrl = product.imagePath;
+
+        // Check and clean URL format
+        if (cleanImageUrl.startsWith('[') && cleanImageUrl.endsWith(']')) {
+          cleanImageUrl = cleanImageUrl.substring(1, cleanImageUrl.length - 1);
+        }
+
+        // Debug print to check the product's image path
+        print('Product: ${product.name}, Image: $cleanImageUrl');
+
         return Container(
           decoration: BoxDecoration(
             color: Colors.black,
@@ -54,9 +65,17 @@ class ProductTile extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: product.imagePath.isNotEmpty
-                    ? Image.network(product.imagePath)
-                    : Image.asset('assets/placeholder.png'), // Fallback image
+                child: cleanImageUrl.isNotEmpty
+                    ? Image.network(
+                        cleanImageUrl,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Handle any errors and use placeholder image if needed
+                          print('Error loading image: $error');
+                          return Image.asset('lib/images/placeholder.png');
+                        },
+                      )
+                    : Image.asset(
+                        'lib/images/placeholder.png'), // Fallback image
               ),
               SizedBox(height: 10),
               Text(
@@ -68,11 +87,20 @@ class ProductTile extends StatelessWidget {
                 ),
                 textAlign: TextAlign.left,
               ),
+              Text(
+                product.url,
+                style: TextStyle(
+                  color: Color.fromARGB(255, 211, 154, 245),
+                  fontSize: 14,
+                  decoration: TextDecoration.underline,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
               SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(''),
+                  Container(),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
