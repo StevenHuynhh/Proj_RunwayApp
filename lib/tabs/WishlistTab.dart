@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:hello_world/models/product.dart';
 import 'package:hello_world/models/shop.dart';
 import 'package:provider/provider.dart';
+import 'package:hello_world/components/product_tile.dart'; // Import the ProductTile widget
 
 class WishlistTab extends StatelessWidget {
   const WishlistTab({super.key});
 
-  void removeItemFromWishlist(BuildContext context, Product product) {
+  void removeItemFromCart(BuildContext context, Product product) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: const Text("Remove this item from your wishlist?"),
+        content: const Text("Remove this item from your cart?"),
         actions: [
           MaterialButton(
             onPressed: () => Navigator.pop(context),
@@ -19,7 +20,9 @@ class WishlistTab extends StatelessWidget {
           MaterialButton(
             onPressed: () {
               Navigator.pop(context);
-              context.read<Shop>().removeFromCart(product);
+              context
+                  .read<Shop>()
+                  .removeFromCart(product); // Remove item from cart
             },
             child: const Text("Remove"),
           )
@@ -30,7 +33,8 @@ class WishlistTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cart = context.watch<Shop>().cart;
+    final cart = context.watch<Shop>().cart; // Use cart instead of wishlist
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
@@ -53,15 +57,8 @@ class WishlistTab extends StatelessWidget {
               itemCount: cart.length,
               itemBuilder: (context, index) {
                 final item = cart[index];
-                return ListTile(
-                  title: Text(
-                    item.name,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.remove),
-                    onPressed: () => removeItemFromWishlist(context, item),
-                  ),
+                return ProductTile(
+                  product: item,
                 );
               },
             ),

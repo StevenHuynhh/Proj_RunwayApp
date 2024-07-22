@@ -19,22 +19,32 @@ class ProductTile extends StatelessWidget {
     context.read<Shop>().removeFromCart(product);
   }
 
+  String extractFirstValidUrl(String urls) {
+    // Remove unwanted characters and split by spaces
+    final urlList =
+        urls.replaceAll(RegExp(r'[^\w\s:/\.\-]'), '').split(RegExp(r'\s+'));
+    for (var url in urlList) {
+      // Check if the URL is valid
+      final cleanedUrl = url.trim();
+      if (Uri.tryParse(cleanedUrl)?.hasAbsolutePath ?? false) {
+        return cleanedUrl;
+      }
+    }
+    // Return a placeholder URL if no valid URL is found
+    return 'lib/images/placeholder.png';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Shop>(
       builder: (context, shop, child) {
         final isInCart = shop.cart.contains(product);
 
-        // Clean URL if needed
-        String cleanImageUrl = product.imagePath;
-
-        // Check and clean URL format
-        if (cleanImageUrl.startsWith('[') && cleanImageUrl.endsWith(']')) {
-          cleanImageUrl = cleanImageUrl.substring(1, cleanImageUrl.length - 1);
-        }
+        // Extract the first valid URL
+        String imageUrl = extractFirstValidUrl(product.imagePath);
 
         // Debug print to check the product's image path
-        print('Product: ${product.name}, Image: $cleanImageUrl');
+        print('Product: ${product.name}, Image: $imageUrl');
 
         return Container(
           decoration: BoxDecoration(
@@ -65,9 +75,9 @@ class ProductTile extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: cleanImageUrl.isNotEmpty
+                child: imageUrl.isNotEmpty
                     ? Image.network(
-                        cleanImageUrl,
+                        imageUrl,
                         errorBuilder: (context, error, stackTrace) {
                           // Handle any errors and use placeholder image if needed
                           print('Error loading image: $error');
