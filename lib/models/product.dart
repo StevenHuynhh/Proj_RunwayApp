@@ -3,13 +3,19 @@ class Product {
   final String url;
   final String imagePath;
 
-  Product({required this.name, required this.url, required this.imagePath});
+  Product({
+    required this.name,
+    required this.url,
+    required this.imagePath,
+  });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      name: json['name'],
-      url: json['url'],
-      imagePath: json['imageUrl'],
+      name: json['name'] ?? 'Unknown',
+      url: json['url'] ?? 'Unknown',
+      imagePath: json['images'] != null && json['images'].isNotEmpty
+          ? json['images'][0]['src']
+          : 'assets/placeholder.png', // Fallback image if no images are provided
     );
   }
 }
