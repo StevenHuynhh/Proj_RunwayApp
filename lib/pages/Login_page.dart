@@ -126,34 +126,8 @@ class _LoginPageState extends State<LoginPage> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 20),
-                  CheckboxListTile(
-                    title: const Text(
-                      "Remember me",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    value: _rememberMe,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _rememberMe = newValue!;
-                      });
-                    },
-                    controlAffinity: ListTileControlAffinity.leading,
-                    activeColor: Colors.white,
-                    checkColor: Colors.black,
-                  ),
-                  const SizedBox(height: 20),
                   Row(
                     children: [
-                      TextButton(
-                        onPressed: () {
-                          // Handle forgot password action
-                        },
-                        child: const Text(
-                          'Forgot password?',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      const Spacer(),
                       TextButton(
                         onPressed: () {
                           // Navigate to SignUpPage
