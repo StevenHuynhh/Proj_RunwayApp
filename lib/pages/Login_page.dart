@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hello_world/controllers/login_controller.dart'; // Import LoginController
-import 'signuppage.dart'; // Import the SignUpPage
+import 'SignUpPage.dart'; // Import the SignUpPage
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
