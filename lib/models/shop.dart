@@ -4,6 +4,28 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'product.dart';
 
+String transformUrl(String url) {
+  if (url.contains("amazon")) {
+    return url;
+  }
+
+  List<String> urlTokens = url.split('/');
+
+  String newDomain = "https://img.ltwebstatic.com/images3_pi/";
+  try {
+    for (int i = 6; i < urlTokens.length; i++) {
+      newDomain += urlTokens[i];
+      if (i != 9) {
+        newDomain += "/";
+      }
+    }
+    return newDomain;
+  } catch (e) {
+    print(e);
+  }
+  return " ";
+}
+
 class Shop extends ChangeNotifier {
   List<Product> _shop = [];
   List<Product> _cart = [];
@@ -54,9 +76,16 @@ class Shop extends ChangeNotifier {
           var productUrl = item['url'] ?? 'https://example.com';
           var productImage = item['images'];
 
+          // If we have a buggy yandex-style URL, treat it differently.
+          if (productImage.contains('[')) {
+            productImage = productImage.replaceAll("'", '"');
+            productImage = json.decode(productImage);
+          }
+
           // Check if productImage is a list and take the first URL
           if (productImage is List && productImage.isNotEmpty) {
-            productImage = productImage[0];
+            print(transformUrl(productImage[0]));
+            productImage = transformUrl(productImage[0]);
           }
 
           // Ensure productImage is a string after the above handling
