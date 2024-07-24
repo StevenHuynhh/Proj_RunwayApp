@@ -3,6 +3,9 @@ import 'package:hello_world/models/product.dart';
 import 'package:hello_world/models/shop.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 class ProductTile extends StatelessWidget {
   final Product product;
 
@@ -97,8 +100,13 @@ class ProductTile extends StatelessWidget {
                 ),
                 textAlign: TextAlign.left,
               ),
-              Text(
-                product.url,
+              Linkify(
+                onOpen: (link) async {
+                  if (!await launchUrl(Uri.parse(link.url))) {
+                    throw Exception('Could not launch ${link.url}');
+                  }
+                },
+                text: product.url,
                 style: TextStyle(
                   color: Color.fromARGB(255, 211, 154, 245),
                   fontSize: 14,
